@@ -1,8 +1,63 @@
 // Shared domain types for Skylens.
 
 export type Tier = "bronze" | "silver" | "gold" | "platinum";
-export type CertLevel = "a1_a3" | "a2" | "sts_01" | "sts_02" | "operational_auth";
 export type MembershipKey = "free" | "pro" | "elite";
+
+// ── Internationalisation & jurisdictions ─────────────────────────────────────
+export type Locale = "nl" | "en" | "de";
+export type CountryCode = "NL" | "GB" | "DE" | "BE" | "FR";
+export type Currency = "EUR" | "GBP";
+
+/**
+ * Country-agnostic capability ladder. Each jurisdiction maps these ordinal
+ * levels onto its own real credentials (EASA for NL/DE, CAA for the UK).
+ */
+export type CapabilityLevel = "registered" | "basic" | "advanced" | "specific" | "org";
+
+export const CAPABILITY_ORDER: CapabilityLevel[] = [
+  "registered",
+  "basic",
+  "advanced",
+  "specific",
+  "org",
+];
+
+export interface Credential {
+  level: CapabilityLevel;
+  code: string; // proper-noun code, e.g. "A2", "A2 CofC", "PDRA01"
+  name: string; // full credential name
+  authority: string; // issuing authority (short)
+  note?: string;
+}
+
+export interface JurisdictionRules {
+  maxAltitude: string;
+  vlosRequired: boolean;
+  registrationThreshold: string;
+  minPilotAge: number;
+  distanceRules: string;
+  remoteId: string;
+}
+
+export interface Jurisdiction {
+  code: CountryCode;
+  name: string; // English display name
+  easaMember: boolean;
+  regime: string; // "EASA" | "UK CAA"
+  currency: Currency;
+  authority: { short: string; full: string; url: string };
+  operatorId: { label: string; example: string; note: string };
+  insurance: { minMajor: number; currency: Currency; basis: string };
+  capabilities: Credential[]; // ordered by CAPABILITY_ORDER
+  rules: JurisdictionRules;
+  legal: {
+    governingLaw: string;
+    privacyRegime: string;
+    dpa: { name: string; url: string };
+    vatRatePct: number;
+    recordRetentionYears: number;
+  };
+}
 
 export interface Segment {
   slug: string;
@@ -22,6 +77,7 @@ export interface City {
   name: string;
   province: string;
   region: string; // e.g. "Randstad"
+  country: CountryCode;
   inhabitants: number;
 }
 
@@ -74,12 +130,13 @@ export interface Pilot {
   company: string;
   citySlug: string;
   region: string;
+  country: CountryCode;
   tier: Tier;
   membership: MembershipKey;
   verified: boolean;
-  certs: CertLevel[];
+  certs: CapabilityLevel[];
   insured: boolean;
-  operatorId: string; // masked RDW exploitantnummer
+  operatorId: string; // masked operator id (RDW / CAA / LBA, per country)
   segments: string[]; // segment slugs
   serviceRadiusKm: number;
   rating: number;

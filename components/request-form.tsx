@@ -18,16 +18,21 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
-import { SEGMENTS, CITIES, BUDGET_BANDS } from "@/lib/catalog";
+import { SEGMENTS, citiesByCountry } from "@/lib/catalog";
 import { availablePilots } from "@/lib/matching";
 import { getSegment, getCity } from "@/lib/catalog";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
+import { useLocale } from "@/components/locale-link";
+import { localized, pick } from "@/lib/i18n/messages";
+import { getLocaleConfig } from "@/lib/i18n/config";
+import { segmentText } from "@/lib/i18n/catalog-i18n";
 import type { RequestInput } from "@/lib/types";
-
-const STEPS = ["Je klus", "Contact", "Overzicht"] as const;
 
 const inputClass =
   "w-full rounded-xl border border-line bg-paper-soft py-3 text-sm font-medium text-ink transition-colors focus:border-brand-400 focus:bg-white placeholder:text-ink-faint";
+
+/** Numeric budget thresholds (in the locale's currency units); labels built per-locale. */
+const BUDGET_THRESHOLDS = [250, 500, 1000, 2500, 5000];
 
 export function RequestForm({
   initialSegment,
@@ -37,19 +42,206 @@ export function RequestForm({
   initialCity?: string;
 }) {
   const router = useRouter();
+  const locale = useLocale();
   const sp = useSearchParams();
   const segParam = initialSegment ?? sp.get("segment") ?? undefined;
   const cityParam = initialCity ?? sp.get("stad") ?? undefined;
+
+  const country = getLocaleConfig(locale).country;
+  const cities = citiesByCountry(country);
+
+  const T = pick(locale, {
+    nl: {
+      steps: ["Je klus", "Contact", "Overzicht"],
+      progress: "Voortgang",
+      needLabel: "Wat heb je nodig?",
+      whereLabel: "Waar?",
+      whenLabel: "Wanneer? (optioneel)",
+      budgetLabel: "Budget (optioneel)",
+      budgetPlaceholder: "Kies een indicatie",
+      budgetUnknown: "Weet ik nog niet",
+      detailsLabel: "Details (optioneel)",
+      detailsPlaceholder:
+        "Vertel kort over de klus: locatie, doel, wat je opgeleverd wilt hebben…",
+      availA: "geverifieerde piloten beschikbaar voor",
+      availIn: "in",
+      nameLabel: "Naam",
+      namePlaceholder: "Voor- en achternaam",
+      emailLabel: "E-mail",
+      emailPlaceholder: "jij@voorbeeld.nl",
+      phoneLabel: "Telefoon (optioneel)",
+      phonePlaceholder: "06 12 34 56 78",
+      companyLabel: "Bedrijf (optioneel)",
+      companyPlaceholder: "Bedrijfsnaam",
+      consent: "Skylens mag deze beelden gebruiken voor promotie (optioneel)",
+      privacy:
+        "Je gegevens worden alleen gebruikt om je te koppelen aan passende piloten. Gratis en vrijblijvend.",
+      reviewTitle: "Controleer je aanvraag",
+      sumApplication: "Toepassing",
+      sumCity: "Stad",
+      sumDate: "Datum",
+      sumBudget: "Budget",
+      sumDetails: "Details",
+      sumName: "Naam",
+      sumEmail: "E-mail",
+      sumPhone: "Telefoon",
+      sumCompany: "Bedrijf",
+      sumPromo: "Promotie",
+      dateFlexible: "Flexibel / nader te bepalen",
+      notGiven: "Niet opgegeven",
+      promoAllowed: "Toegestaan",
+      promoDenied: "Niet toegestaan",
+      matchA: "We matchen je direct met",
+      matchB: "geverifieerde piloten in",
+      sendError:
+        "Er ging iets mis bij het versturen. We sturen je alvast door naar je matches…",
+      back: "Terug",
+      stepOf: (a: number, b: number) => `Stap ${a} van ${b}`,
+      nextBtn: "Volgende",
+      submitBtn: "Verstuur aanvraag",
+      submitting: "Versturen…",
+      errSegment: "Kies een toepassing.",
+      errCity: "Kies een stad.",
+      errName: "Vul je naam in.",
+      errEmail: "Vul je e-mailadres in.",
+      errEmailInvalid: "Vul een geldig e-mailadres in.",
+    },
+    en: {
+      steps: ["Your job", "Contact", "Review"],
+      progress: "Progress",
+      needLabel: "What do you need?",
+      whereLabel: "Where?",
+      whenLabel: "When? (optional)",
+      budgetLabel: "Budget (optional)",
+      budgetPlaceholder: "Choose a guide",
+      budgetUnknown: "Not sure yet",
+      detailsLabel: "Details (optional)",
+      detailsPlaceholder:
+        "Tell us briefly about the job: location, goal, what you want delivered…",
+      availA: "verified pilots available for",
+      availIn: "in",
+      nameLabel: "Name",
+      namePlaceholder: "First and last name",
+      emailLabel: "Email",
+      emailPlaceholder: "you@example.co.uk",
+      phoneLabel: "Phone (optional)",
+      phonePlaceholder: "07700 900123",
+      companyLabel: "Company (optional)",
+      companyPlaceholder: "Company name",
+      consent: "Skylens may use this imagery for promotion (optional)",
+      privacy:
+        "Your details are only used to match you with suitable pilots. Free and no obligation.",
+      reviewTitle: "Check your request",
+      sumApplication: "Service",
+      sumCity: "City",
+      sumDate: "Date",
+      sumBudget: "Budget",
+      sumDetails: "Details",
+      sumName: "Name",
+      sumEmail: "Email",
+      sumPhone: "Phone",
+      sumCompany: "Company",
+      sumPromo: "Promotion",
+      dateFlexible: "Flexible / to be confirmed",
+      notGiven: "Not specified",
+      promoAllowed: "Allowed",
+      promoDenied: "Not allowed",
+      matchA: "We'll match you straight away with",
+      matchB: "verified pilots in",
+      sendError:
+        "Something went wrong while sending. We're taking you to your matches anyway…",
+      back: "Back",
+      stepOf: (a: number, b: number) => `Step ${a} of ${b}`,
+      nextBtn: "Next",
+      submitBtn: "Send request",
+      submitting: "Sending…",
+      errSegment: "Choose a service.",
+      errCity: "Choose a city.",
+      errName: "Enter your name.",
+      errEmail: "Enter your email address.",
+      errEmailInvalid: "Enter a valid email address.",
+    },
+    de: {
+      steps: ["Ihr Auftrag", "Kontakt", "Übersicht"],
+      progress: "Fortschritt",
+      needLabel: "Was brauchen Sie?",
+      whereLabel: "Wo?",
+      whenLabel: "Wann? (optional)",
+      budgetLabel: "Budget (optional)",
+      budgetPlaceholder: "Richtwert wählen",
+      budgetUnknown: "Weiß ich noch nicht",
+      detailsLabel: "Details (optional)",
+      detailsPlaceholder:
+        "Beschreiben Sie kurz den Auftrag: Standort, Ziel, gewünschtes Ergebnis…",
+      availA: "geprüfte Piloten verfügbar für",
+      availIn: "in",
+      nameLabel: "Name",
+      namePlaceholder: "Vor- und Nachname",
+      emailLabel: "E-Mail",
+      emailPlaceholder: "sie@beispiel.de",
+      phoneLabel: "Telefon (optional)",
+      phonePlaceholder: "0151 23456789",
+      companyLabel: "Firma (optional)",
+      companyPlaceholder: "Firmenname",
+      consent: "Skylens darf diese Aufnahmen zu Werbezwecken nutzen (optional)",
+      privacy:
+        "Ihre Daten werden ausschließlich verwendet, um Sie mit passenden Piloten zu verbinden. Kostenlos und unverbindlich.",
+      reviewTitle: "Prüfen Sie Ihre Anfrage",
+      sumApplication: "Anwendung",
+      sumCity: "Stadt",
+      sumDate: "Datum",
+      sumBudget: "Budget",
+      sumDetails: "Details",
+      sumName: "Name",
+      sumEmail: "E-Mail",
+      sumPhone: "Telefon",
+      sumCompany: "Firma",
+      sumPromo: "Werbung",
+      dateFlexible: "Flexibel / noch festzulegen",
+      notGiven: "Keine Angabe",
+      promoAllowed: "Erlaubt",
+      promoDenied: "Nicht erlaubt",
+      matchA: "Wir verbinden Sie sofort mit",
+      matchB: "geprüften Piloten in",
+      sendError:
+        "Beim Senden ist etwas schiefgegangen. Wir leiten Sie schon einmal zu Ihren Matches weiter…",
+      back: "Zurück",
+      stepOf: (a: number, b: number) => `Schritt ${a} von ${b}`,
+      nextBtn: "Weiter",
+      submitBtn: "Anfrage senden",
+      submitting: "Senden…",
+      errSegment: "Wählen Sie eine Anwendung.",
+      errCity: "Wählen Sie eine Stadt.",
+      errName: "Geben Sie Ihren Namen ein.",
+      errEmail: "Geben Sie Ihre E-Mail-Adresse ein.",
+      errEmailInvalid: "Geben Sie eine gültige E-Mail-Adresse ein.",
+    },
+  });
+
+  const STEPS = T.steps;
+
+  // Locale-aware budget bands, built from numeric thresholds + the locale currency.
+  const budgetBands: string[] = [
+    `< ${formatCurrency(BUDGET_THRESHOLDS[0], locale)}`,
+    ...BUDGET_THRESHOLDS.slice(0, -1).map(
+      (lo, i) =>
+        `${formatCurrency(lo, locale)} – ${formatCurrency(BUDGET_THRESHOLDS[i + 1], locale)}`,
+    ),
+    `${formatCurrency(BUDGET_THRESHOLDS[BUDGET_THRESHOLDS.length - 1], locale)}+`,
+    T.budgetUnknown,
+  ];
 
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [softError, setSoftError] = useState(false);
 
+  const defaultCity = cities[0]?.slug ?? "amsterdam";
+
   const [segment, setSegment] = useState(
-    segParam && getSegment(segParam) ? segParam : "vastgoed",
+    segParam && getSegment(segParam) ? segParam : SEGMENTS[0]?.slug ?? "vastgoed",
   );
   const [city, setCity] = useState(
-    cityParam && getCity(cityParam) ? cityParam : "amsterdam",
+    cityParam && getCity(cityParam) ? cityParam : defaultCity,
   );
   const [date, setDate] = useState("");
   const [budgetBand, setBudgetBand] = useState("");
@@ -63,24 +255,24 @@ export function RequestForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const count = availablePilots(segment, city);
-  const segmentName = getSegment(segment)?.name ?? "";
+  const count = availablePilots(segment, city, country);
+  const segmentName = segmentText(segment, locale).name;
   const cityName = getCity(city)?.name ?? "";
 
   function validateStep1() {
     const e: Record<string, string> = {};
-    if (!segment) e.segment = "Kies een toepassing.";
-    if (!city) e.city = "Kies een stad.";
+    if (!segment) e.segment = T.errSegment;
+    if (!city) e.city = T.errCity;
     setErrors(e);
     return Object.keys(e).length === 0;
   }
 
   function validateStep2() {
     const e: Record<string, string> = {};
-    if (!name.trim()) e.name = "Vul je naam in.";
-    if (!email.trim()) e.email = "Vul je e-mailadres in.";
+    if (!name.trim()) e.name = T.errName;
+    if (!email.trim()) e.email = T.errEmail;
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      e.email = "Vul een geldig e-mailadres in.";
+      e.email = T.errEmailInvalid;
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -118,9 +310,12 @@ export function RequestForm({
       marketingConsent,
     };
 
-    const dest = `/aanvraag/bedankt?segment=${encodeURIComponent(
-      segment,
-    )}&stad=${encodeURIComponent(city)}`;
+    const dest = localized(
+      locale,
+      `/aanvraag/bedankt?segment=${encodeURIComponent(
+        segment,
+      )}&stad=${encodeURIComponent(city)}`,
+    );
 
     try {
       const res = await fetch("/api/requests", {
@@ -128,7 +323,7 @@ export function RequestForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Aanvraag mislukt");
+      if (!res.ok) throw new Error("Request failed");
       router.push(dest);
     } catch {
       // Demo-resilience: laat de gebruiker niet stranden — navigeer alsnog door.
@@ -140,7 +335,7 @@ export function RequestForm({
   return (
     <div className="card card-pad shadow-lift">
       {/* Stepper */}
-      <ol className="flex items-center gap-2" aria-label="Voortgang">
+      <ol className="flex items-center gap-2" aria-label={T.progress}>
         {STEPS.map((label, i) => {
           const done = i < step;
           const active = i === step;
@@ -184,7 +379,7 @@ export function RequestForm({
         {step === 0 ? (
           <div className="grid gap-5">
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Wat heb je nodig?" htmlFor="segment" error={errors.segment}>
+              <Field label={T.needLabel} htmlFor="segment" error={errors.segment}>
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <select
@@ -195,14 +390,14 @@ export function RequestForm({
                   >
                     {SEGMENTS.map((s) => (
                       <option key={s.slug} value={s.slug}>
-                        {s.name}
+                        {segmentText(s.slug, locale).name}
                       </option>
                     ))}
                   </select>
                 </div>
               </Field>
 
-              <Field label="Waar?" htmlFor="city" error={errors.city}>
+              <Field label={T.whereLabel} htmlFor="city" error={errors.city}>
                 <div className="relative">
                   <MapPin className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <select
@@ -211,7 +406,7 @@ export function RequestForm({
                     onChange={(e) => setCity(e.target.value)}
                     className={cn(inputClass, "appearance-none pl-9 pr-8")}
                   >
-                    {CITIES.map((c) => (
+                    {cities.map((c) => (
                       <option key={c.slug} value={c.slug}>
                         {c.name}
                       </option>
@@ -222,7 +417,7 @@ export function RequestForm({
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Wanneer? (optioneel)" htmlFor="date">
+              <Field label={T.whenLabel} htmlFor="date">
                 <div className="relative">
                   <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <input
@@ -235,7 +430,7 @@ export function RequestForm({
                 </div>
               </Field>
 
-              <Field label="Budget (optioneel)" htmlFor="budget">
+              <Field label={T.budgetLabel} htmlFor="budget">
                 <div className="relative">
                   <Euro className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <select
@@ -244,8 +439,8 @@ export function RequestForm({
                     onChange={(e) => setBudgetBand(e.target.value)}
                     className={cn(inputClass, "appearance-none pl-9 pr-8")}
                   >
-                    <option value="">Kies een indicatie</option>
-                    {BUDGET_BANDS.map((b) => (
+                    <option value="">{T.budgetPlaceholder}</option>
+                    {budgetBands.map((b) => (
                       <option key={b} value={b}>
                         {b}
                       </option>
@@ -255,7 +450,7 @@ export function RequestForm({
               </Field>
             </div>
 
-            <Field label="Details (optioneel)" htmlFor="details">
+            <Field label={T.detailsLabel} htmlFor="details">
               <div className="relative">
                 <FileText className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-ink-faint" />
                 <textarea
@@ -263,7 +458,7 @@ export function RequestForm({
                   value={details}
                   onChange={(e) => setDetails(e.target.value)}
                   rows={4}
-                  placeholder="Vertel kort over de klus: locatie, doel, wat je opgeleverd wilt hebben…"
+                  placeholder={T.detailsPlaceholder}
                   className={cn(inputClass, "resize-y pl-9 pr-3 leading-relaxed")}
                 />
               </div>
@@ -272,8 +467,8 @@ export function RequestForm({
             <p className="flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800">
               <ShieldCheck className="h-4 w-4 shrink-0 text-brand-600" />
               <span>
-                <strong className="font-semibold">{count}</strong> geverifieerde piloten
-                beschikbaar voor {segmentName.toLowerCase()} in {cityName}.
+                <strong className="font-semibold">{count}</strong> {T.availA}{" "}
+                {segmentName.toLowerCase()} {T.availIn} {cityName}.
               </span>
             </p>
           </div>
@@ -283,7 +478,7 @@ export function RequestForm({
         {step === 1 ? (
           <div className="grid gap-5">
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Naam" htmlFor="name" error={errors.name}>
+              <Field label={T.nameLabel} htmlFor="name" error={errors.name}>
                 <div className="relative">
                   <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <input
@@ -292,13 +487,13 @@ export function RequestForm({
                     autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Voor- en achternaam"
+                    placeholder={T.namePlaceholder}
                     className={cn(inputClass, "pl-9 pr-3")}
                   />
                 </div>
               </Field>
 
-              <Field label="E-mail" htmlFor="email" error={errors.email}>
+              <Field label={T.emailLabel} htmlFor="email" error={errors.email}>
                 <div className="relative">
                   <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <input
@@ -307,7 +502,7 @@ export function RequestForm({
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jij@voorbeeld.nl"
+                    placeholder={T.emailPlaceholder}
                     className={cn(inputClass, "pl-9 pr-3")}
                   />
                 </div>
@@ -315,7 +510,7 @@ export function RequestForm({
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Telefoon (optioneel)" htmlFor="phone">
+              <Field label={T.phoneLabel} htmlFor="phone">
                 <div className="relative">
                   <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <input
@@ -324,13 +519,13 @@ export function RequestForm({
                     autoComplete="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="06 12 34 56 78"
+                    placeholder={T.phonePlaceholder}
                     className={cn(inputClass, "pl-9 pr-3")}
                   />
                 </div>
               </Field>
 
-              <Field label="Bedrijf (optioneel)" htmlFor="company">
+              <Field label={T.companyLabel} htmlFor="company">
                 <div className="relative">
                   <Building2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
                   <input
@@ -339,7 +534,7 @@ export function RequestForm({
                     autoComplete="organization"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    placeholder="Bedrijfsnaam"
+                    placeholder={T.companyPlaceholder}
                     className={cn(inputClass, "pl-9 pr-3")}
                   />
                 </div>
@@ -353,15 +548,12 @@ export function RequestForm({
                 onChange={(e) => setMarketingConsent(e.target.checked)}
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-line text-brand-600 focus:ring-brand-400"
               />
-              <span>
-                Skylens mag deze beelden gebruiken voor promotie (optioneel)
-              </span>
+              <span>{T.consent}</span>
             </label>
 
             <p className="flex items-start gap-2 text-sm text-ink-muted">
               <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
-              Je gegevens worden alleen gebruikt om je te koppelen aan passende piloten.
-              Gratis en vrijblijvend.
+              {T.privacy}
             </p>
           </div>
         ) : null}
@@ -369,20 +561,20 @@ export function RequestForm({
         {/* ── Step 3: overzicht ── */}
         {step === 2 ? (
           <div className="grid gap-5">
-            <h2 className="font-display text-xl font-bold">Controleer je aanvraag</h2>
+            <h2 className="font-display text-xl font-bold">{T.reviewTitle}</h2>
             <dl className="overflow-hidden rounded-xl border border-line">
-              <SummaryRow label="Toepassing" value={segmentName} />
-              <SummaryRow label="Stad" value={cityName} />
-              <SummaryRow label="Datum" value={date || "Flexibel / nader te bepalen"} />
-              <SummaryRow label="Budget" value={budgetBand || "Niet opgegeven"} />
-              {details.trim() ? <SummaryRow label="Details" value={details.trim()} /> : null}
-              <SummaryRow label="Naam" value={name.trim()} />
-              <SummaryRow label="E-mail" value={email.trim()} />
-              {phone.trim() ? <SummaryRow label="Telefoon" value={phone.trim()} /> : null}
-              {company.trim() ? <SummaryRow label="Bedrijf" value={company.trim()} /> : null}
+              <SummaryRow label={T.sumApplication} value={segmentName} />
+              <SummaryRow label={T.sumCity} value={cityName} />
+              <SummaryRow label={T.sumDate} value={date || T.dateFlexible} />
+              <SummaryRow label={T.sumBudget} value={budgetBand || T.notGiven} />
+              {details.trim() ? <SummaryRow label={T.sumDetails} value={details.trim()} /> : null}
+              <SummaryRow label={T.sumName} value={name.trim()} />
+              <SummaryRow label={T.sumEmail} value={email.trim()} />
+              {phone.trim() ? <SummaryRow label={T.sumPhone} value={phone.trim()} /> : null}
+              {company.trim() ? <SummaryRow label={T.sumCompany} value={company.trim()} /> : null}
               <SummaryRow
-                label="Promotie"
-                value={marketingConsent ? "Toegestaan" : "Niet toegestaan"}
+                label={T.sumPromo}
+                value={marketingConsent ? T.promoAllowed : T.promoDenied}
                 last
               />
             </dl>
@@ -390,15 +582,15 @@ export function RequestForm({
             <p className="flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800">
               <ShieldCheck className="h-4 w-4 shrink-0 text-brand-600" />
               <span>
-                We matchen je direct met <strong className="font-semibold">{count}</strong>{" "}
-                geverifieerde piloten in {cityName}.
+                {T.matchA} <strong className="font-semibold">{count}</strong>{" "}
+                {T.matchB} {cityName}.
               </span>
             </p>
 
             {softError ? (
               <p className="flex items-center gap-2 rounded-xl bg-signal/10 px-4 py-3 text-sm text-ink-soft">
                 <AlertCircle className="h-4 w-4 shrink-0 text-signal" />
-                Er ging iets mis bij het versturen. We sturen je alvast door naar je matches…
+                {T.sendError}
               </p>
             ) : null}
           </div>
@@ -409,17 +601,17 @@ export function RequestForm({
           {step > 0 ? (
             <button type="button" onClick={back} className="btn btn-md btn-ghost">
               <ArrowLeft className="h-4 w-4" />
-              Terug
+              {T.back}
             </button>
           ) : (
             <span className="font-mono text-xs uppercase tracking-wider text-ink-faint">
-              Stap {step + 1} van {STEPS.length}
+              {T.stepOf(step + 1, STEPS.length)}
             </span>
           )}
 
           {step < STEPS.length - 1 ? (
             <button type="button" onClick={next} className="btn btn-md btn-primary">
-              Volgende
+              {T.nextBtn}
               <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
@@ -428,7 +620,7 @@ export function RequestForm({
               disabled={submitting}
               className="btn btn-md btn-primary disabled:opacity-60"
             >
-              {submitting ? "Versturen…" : "Verstuur aanvraag"}
+              {submitting ? T.submitting : T.submitBtn}
               {!submitting ? <ArrowRight className="h-4 w-4" /> : null}
             </button>
           )}

@@ -9,7 +9,12 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/dashboard", "/piloot", "/admin", "/aanvraag/bedankt"],
+      disallow: [
+        "/*/dashboard",
+        "/*/piloot",
+        "/*/admin",
+        "/*/aanvraag/bedankt",
+      ],
     },
     sitemap: `${SITE.url}/sitemap.xml`,
   };

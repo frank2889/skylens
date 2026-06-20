@@ -122,6 +122,24 @@ eerder, puur als validatie. De ruil: €0 ad spend = trager naar liquiditeit (ca
 
 ---
 
+## Go-to-market: aanbod via droneopleidingen (warm kanaal)
+
+De goedkoopste, meest vertrouwde manier om de **aanbodkant** (piloten) te vullen is een
+partnerschap met **droneopleidingen** — afgestudeerden hebben net hun bewijs gehaald en zoeken
+betaald werk. Win-win: hun afgestudeerden krijgen gratis betaalde klussen via Skylens (betalen
+alleen per lead), wat de opleiding een sterker verkoopargument + co-branding geeft.
+
+- **Warme lead:** indirecte connectie via *Restaurant De Cockpit* op **Seppe (Breda
+  International Airport, Noord-Brabant)** → benut die om een gesprek met de droneopleiding ter
+  plaatse te openen (het restaurant is de deur, niet de deal).
+- **Let op:** dit zaait aanbod in **Brabant**, niet de Randstad. Koppel er vraag in
+  Eindhoven/Breda aan, óf maak Brabant bewust een **tweede liquiditeitspocket**. Niet onboarden
+  in een vraag-vacuüm. Details: [plan/06](plan/06-geo-strategie-en-3jarenplan.md) (Part 4) en
+  [plan/04](plan/04-marketing.md) (§5). Maak "opleiding-partnerschap" een herhaalbaar
+  draaiboek per markt (NL-scholen → UK CAA-RAE's → Duitse Flugschulen).
+
+---
+
 ## Eerlijke kanttekeningen
 
 - **Leadprijzen (€6–80) zijn geëxtrapoleerd** uit Werkspot/Bark/Thumbtack — er bestaat nog

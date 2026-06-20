@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { SITE } from "@/lib/site";
+import { localized } from "@/lib/i18n/messages";
 
 /** Wordmark + a flight-path mark (ascending node-line), not a quadcopter cliché. */
-export function Logo({ className, light = false }: { className?: string; light?: boolean }) {
+export function Logo({ className, light = false, locale }: { className?: string; light?: boolean; locale?: string }) {
   return (
     <Link
-      href="/"
+      href={locale ? localized(locale, "/") : "/"}
       className={cn("group inline-flex items-center gap-2.5", className)}
       aria-label={`${SITE.name} home`}
     >

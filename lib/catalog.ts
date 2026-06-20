@@ -114,29 +114,48 @@ export function getSegment(slug: string): Segment | undefined {
 
 // ── Steden (voor programmatische SEO) ────────────────────────────────────────
 export const CITIES: City[] = [
-  { slug: "amsterdam", name: "Amsterdam", province: "Noord-Holland", region: "Randstad", inhabitants: 921000 },
-  { slug: "rotterdam", name: "Rotterdam", province: "Zuid-Holland", region: "Randstad", inhabitants: 656000 },
-  { slug: "den-haag", name: "Den Haag", province: "Zuid-Holland", region: "Randstad", inhabitants: 549000 },
-  { slug: "utrecht", name: "Utrecht", province: "Utrecht", region: "Randstad", inhabitants: 361000 },
-  { slug: "eindhoven", name: "Eindhoven", province: "Noord-Brabant", region: "Brabant", inhabitants: 238000 },
-  { slug: "groningen", name: "Groningen", province: "Groningen", region: "Noord", inhabitants: 234000 },
-  { slug: "tilburg", name: "Tilburg", province: "Noord-Brabant", region: "Brabant", inhabitants: 224000 },
-  { slug: "almere", name: "Almere", province: "Flevoland", region: "Randstad", inhabitants: 218000 },
-  { slug: "breda", name: "Breda", province: "Noord-Brabant", region: "Brabant", inhabitants: 184000 },
-  { slug: "nijmegen", name: "Nijmegen", province: "Gelderland", region: "Oost", inhabitants: 179000 },
-  { slug: "haarlem", name: "Haarlem", province: "Noord-Holland", region: "Randstad", inhabitants: 162000 },
-  { slug: "arnhem", name: "Arnhem", province: "Gelderland", region: "Oost", inhabitants: 165000 },
-  { slug: "amersfoort", name: "Amersfoort", province: "Utrecht", region: "Randstad", inhabitants: 159000 },
-  { slug: "zaanstad", name: "Zaanstad", province: "Noord-Holland", region: "Randstad", inhabitants: 157000 },
-  { slug: "den-bosch", name: "'s-Hertogenbosch", province: "Noord-Brabant", region: "Brabant", inhabitants: 157000 },
-  { slug: "apeldoorn", name: "Apeldoorn", province: "Gelderland", region: "Oost", inhabitants: 165000 },
-  { slug: "enschede", name: "Enschede", province: "Overijssel", region: "Oost", inhabitants: 161000 },
-  { slug: "leiden", name: "Leiden", province: "Zuid-Holland", region: "Randstad", inhabitants: 127000 },
-  { slug: "maastricht", name: "Maastricht", province: "Limburg", region: "Zuid", inhabitants: 122000 },
-  { slug: "zwolle", name: "Zwolle", province: "Overijssel", region: "Oost", inhabitants: 131000 },
-  { slug: "delft", name: "Delft", province: "Zuid-Holland", region: "Randstad", inhabitants: 104000 },
-  { slug: "alkmaar", name: "Alkmaar", province: "Noord-Holland", region: "Randstad", inhabitants: 110000 },
+  // ── Nederland ──
+  { slug: "amsterdam", name: "Amsterdam", province: "Noord-Holland", region: "Randstad", country: "NL", inhabitants: 921000 },
+  { slug: "rotterdam", name: "Rotterdam", province: "Zuid-Holland", region: "Randstad", country: "NL", inhabitants: 656000 },
+  { slug: "den-haag", name: "Den Haag", province: "Zuid-Holland", region: "Randstad", country: "NL", inhabitants: 549000 },
+  { slug: "utrecht", name: "Utrecht", province: "Utrecht", region: "Randstad", country: "NL", inhabitants: 361000 },
+  { slug: "eindhoven", name: "Eindhoven", province: "Noord-Brabant", region: "Brabant", country: "NL", inhabitants: 238000 },
+  { slug: "groningen", name: "Groningen", province: "Groningen", region: "Noord", country: "NL", inhabitants: 234000 },
+  { slug: "tilburg", name: "Tilburg", province: "Noord-Brabant", region: "Brabant", country: "NL", inhabitants: 224000 },
+  { slug: "almere", name: "Almere", province: "Flevoland", region: "Randstad", country: "NL", inhabitants: 218000 },
+  { slug: "breda", name: "Breda", province: "Noord-Brabant", region: "Brabant", country: "NL", inhabitants: 184000 },
+  { slug: "nijmegen", name: "Nijmegen", province: "Gelderland", region: "Oost", country: "NL", inhabitants: 179000 },
+  { slug: "haarlem", name: "Haarlem", province: "Noord-Holland", region: "Randstad", country: "NL", inhabitants: 162000 },
+  { slug: "arnhem", name: "Arnhem", province: "Gelderland", region: "Oost", country: "NL", inhabitants: 165000 },
+  { slug: "amersfoort", name: "Amersfoort", province: "Utrecht", region: "Randstad", country: "NL", inhabitants: 159000 },
+  { slug: "den-bosch", name: "'s-Hertogenbosch", province: "Noord-Brabant", region: "Brabant", country: "NL", inhabitants: 157000 },
+  { slug: "maastricht", name: "Maastricht", province: "Limburg", region: "Zuid", country: "NL", inhabitants: 122000 },
+  { slug: "zwolle", name: "Zwolle", province: "Overijssel", region: "Oost", country: "NL", inhabitants: 131000 },
+  // ── United Kingdom ──
+  { slug: "london", name: "London", province: "Greater London", region: "England", country: "GB", inhabitants: 8980000 },
+  { slug: "manchester", name: "Manchester", province: "Greater Manchester", region: "England", country: "GB", inhabitants: 552000 },
+  { slug: "birmingham", name: "Birmingham", province: "West Midlands", region: "England", country: "GB", inhabitants: 1145000 },
+  { slug: "leeds", name: "Leeds", province: "West Yorkshire", region: "England", country: "GB", inhabitants: 793000 },
+  { slug: "glasgow", name: "Glasgow", province: "Glasgow City", region: "Scotland", country: "GB", inhabitants: 635000 },
+  { slug: "liverpool", name: "Liverpool", province: "Merseyside", region: "England", country: "GB", inhabitants: 500000 },
+  { slug: "bristol", name: "Bristol", province: "Bristol", region: "England", country: "GB", inhabitants: 472000 },
+  { slug: "edinburgh", name: "Edinburgh", province: "City of Edinburgh", region: "Scotland", country: "GB", inhabitants: 506000 },
+  { slug: "newcastle", name: "Newcastle", province: "Tyne and Wear", region: "England", country: "GB", inhabitants: 300000 },
+  { slug: "sheffield", name: "Sheffield", province: "South Yorkshire", region: "England", country: "GB", inhabitants: 556000 },
+  // ── Deutschland ──
+  { slug: "koeln", name: "Köln", province: "Nordrhein-Westfalen", region: "NRW", country: "DE", inhabitants: 1087000 },
+  { slug: "duesseldorf", name: "Düsseldorf", province: "Nordrhein-Westfalen", region: "NRW", country: "DE", inhabitants: 619000 },
+  { slug: "dortmund", name: "Dortmund", province: "Nordrhein-Westfalen", region: "Ruhrgebiet", country: "DE", inhabitants: 588000 },
+  { slug: "essen", name: "Essen", province: "Nordrhein-Westfalen", region: "Ruhrgebiet", country: "DE", inhabitants: 583000 },
+  { slug: "duisburg", name: "Duisburg", province: "Nordrhein-Westfalen", region: "Ruhrgebiet", country: "DE", inhabitants: 498000 },
+  { slug: "berlin", name: "Berlin", province: "Berlin", region: "Berlin", country: "DE", inhabitants: 3677000 },
+  { slug: "muenchen", name: "München", province: "Bayern", region: "Bayern", country: "DE", inhabitants: 1488000 },
+  { slug: "hamburg", name: "Hamburg", province: "Hamburg", region: "Hamburg", country: "DE", inhabitants: 1906000 },
 ];
+
+export function citiesByCountry(country: City["country"]): City[] {
+  return CITIES.filter((c) => c.country === country);
+}
 
 export function getCity(slug: string): City | undefined {
   return CITIES.find((c) => c.slug === slug);

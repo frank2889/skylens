@@ -285,6 +285,8 @@ Paid spend's role: **buy liquidity in months 1–6** while SEO + flywheel mature
 | **Insurers / DroneWatch / industry media** | Content partnerships, the annual data report → PR + backlinks | Authority/EEAT + free reach |
 | **Construction / facility-management firms** | Direct B2B for recurring inspection/progress (higher ACV margin engine) | Largest revenue pool (31–32% of EU services) |
 
+> **Priority warm channel — drone training academies.** The flight-school partnership is the cheapest, highest-trust *supply* acquisition route: graduates just earned their licence and need paid work. **Concrete warm lead:** an indirect connection via *Restaurant De Cockpit* at **Seppe (Breda International Airport, Noord-Brabant)** → use it to open a partnership with the on-site drone academy. Note this seeds supply in **Brabant**, so pair it with Eindhoven/Breda demand or treat Brabant as a deliberate second liquidity pocket (see [06-geo](06-geo-strategie-en-3jarenplan.md), Part 4). Make "academy partnership" a repeatable playbook per market (NL schools → UK CAA RAEs → German Flugschulen).
+
 ---
 
 ## 6. Year-1 launch marketing plan

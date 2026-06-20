@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Star, ShieldCheck, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TIER_LABELS } from "@/lib/utils";
-import type { Tier } from "@/lib/types";
+import { useLocale } from "./locale-link";
+import { localized, pick } from "@/lib/i18n/messages";
+import type { Tier, Locale } from "@/lib/types";
 
 const TIER_DOT: Record<Tier, string> = {
   bronze: "#C77B3C",
@@ -11,20 +14,30 @@ const TIER_DOT: Record<Tier, string> = {
   platinum: "#9FB6C4",
 };
 
+const TIER_TEXT: Record<Locale, Record<Tier, string>> = {
+  nl: { bronze: "Brons", silver: "Zilver", gold: "Goud", platinum: "Platinum" },
+  en: { bronze: "Bronze", silver: "Silver", gold: "Gold", platinum: "Platinum" },
+  de: { bronze: "Bronze", silver: "Silber", gold: "Gold", platinum: "Platin" },
+};
+
+const VERIFIED_TEXT: Record<Locale, string> = { nl: "Geverifieerd", en: "Verified", de: "Geprüft" };
+
 export function TierBadge({ tier, className }: { tier: Tier; className?: string }) {
+  const locale = useLocale();
   return (
     <span className={cn("pill", className)}>
       <span className="h-2 w-2 rounded-full" style={{ background: TIER_DOT[tier] }} />
-      {TIER_LABELS[tier]}
+      {pick(locale, TIER_TEXT)[tier]}
     </span>
   );
 }
 
 export function VerifiedBadge({ className }: { className?: string }) {
+  const locale = useLocale();
   return (
     <span className={cn("badge-verify", className)}>
       <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2} />
-      Geverifieerd
+      {pick(locale, VERIFIED_TEXT)}
     </span>
   );
 }
@@ -74,9 +87,11 @@ export function Stat({ value, label }: { value: string; label: string }) {
   );
 }
 
+/** Locale-aware text link. `href` is locale-less, e.g. "/toepassingen". */
 export function TextLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
+  const locale = useLocale();
   return (
-    <Link href={href} className={cn("group inline-flex items-center gap-1.5 link-underline", className)}>
+    <Link href={localized(locale, href)} className={cn("group inline-flex items-center gap-1.5 link-underline", className)}>
       {children}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
     </Link>

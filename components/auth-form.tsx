@@ -5,18 +5,87 @@ import Link from "next/link";
 import { Mail, ArrowRight, CheckCircle2, Info, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/locale-link";
+import { localized, pick } from "@/lib/i18n/messages";
 
 type Mode = "login" | "signup";
 type Role = "klant" | "piloot";
 type Status = "idle" | "loading" | "sent" | "demo" | "error";
 
 export function AuthForm({ mode }: { mode: Mode }) {
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("piloot");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
   const isSignup = mode === "signup";
+
+  const T = pick(locale, {
+    nl: {
+      checkMail: "Check je mail",
+      sentLink: "We hebben een inloglink gestuurd naar",
+      openLink: ". Open de link op dit apparaat om verder te gaan.",
+      useOtherEmail: "Ander e-mailadres gebruiken",
+      signupAs: "Ik meld me aan als",
+      client: "Opdrachtgever",
+      pilot: "Piloot",
+      email: "E-mailadres",
+      emailPlaceholder: "naam@bedrijf.nl",
+      demo:
+        "Inloggen wordt actief zodra Supabase is gekoppeld. Voeg je Supabase-keys toe om magic-link login en live data in te schakelen.",
+      somethingWrong: "Er ging iets mis: ",
+      busy: "Bezig…",
+      createAccount: "Account aanmaken",
+      sendLink: "Inloglink versturen",
+      haveAccount: "Heb je al een account?",
+      login: "Inloggen",
+      noAccount: "Nog geen account?",
+      signupFree: "Gratis aanmelden",
+    },
+    en: {
+      checkMail: "Check your inbox",
+      sentLink: "We've sent a sign-in link to",
+      openLink: ". Open the link on this device to continue.",
+      useOtherEmail: "Use a different email address",
+      signupAs: "I'm signing up as",
+      client: "Client",
+      pilot: "Pilot",
+      email: "Email address",
+      emailPlaceholder: "name@company.co.uk",
+      demo:
+        "Sign-in goes live once Supabase is connected. Add your Supabase keys to enable magic-link login and live data.",
+      somethingWrong: "Something went wrong: ",
+      busy: "Working…",
+      createAccount: "Create account",
+      sendLink: "Send sign-in link",
+      haveAccount: "Already have an account?",
+      login: "Log in",
+      noAccount: "No account yet?",
+      signupFree: "Sign up free",
+    },
+    de: {
+      checkMail: "Sieh in deinem Postfach nach",
+      sentLink: "Wir haben einen Anmeldelink gesendet an",
+      openLink: ". Öffne den Link auf diesem Gerät, um fortzufahren.",
+      useOtherEmail: "Andere E-Mail-Adresse verwenden",
+      signupAs: "Ich melde mich an als",
+      client: "Auftraggeber",
+      pilot: "Pilot",
+      email: "E-Mail-Adresse",
+      emailPlaceholder: "name@firma.de",
+      demo:
+        "Die Anmeldung wird aktiv, sobald Supabase verbunden ist. Füge deine Supabase-Keys hinzu, um Magic-Link-Login und Live-Daten zu aktivieren.",
+      somethingWrong: "Etwas ist schiefgelaufen: ",
+      busy: "Wird bearbeitet…",
+      createAccount: "Konto erstellen",
+      sendLink: "Anmeldelink senden",
+      haveAccount: "Hast du schon ein Konto?",
+      login: "Anmelden",
+      noAccount: "Noch kein Konto?",
+      signupFree: "Kostenlos registrieren",
+    },
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,18 +119,17 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-brand-50 text-brand-700">
           <CheckCircle2 className="h-6 w-6" strokeWidth={1.7} />
         </span>
-        <h2 className="mt-5 text-xl font-bold">Check je mail</h2>
+        <h2 className="mt-5 text-xl font-bold">{T.checkMail}</h2>
         <p className="mt-2 text-ink-muted pretty">
-          We hebben een inloglink gestuurd naar{" "}
-          <span className="font-semibold text-ink">{email}</span>. Open de link op dit
-          apparaat om verder te gaan.
+          {T.sentLink}{" "}
+          <span className="font-semibold text-ink">{email}</span>{T.openLink}
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
           className="mt-6 text-sm link-underline"
         >
-          Ander e-mailadres gebruiken
+          {T.useOtherEmail}
         </button>
       </div>
     );
@@ -72,7 +140,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       {isSignup ? (
         <div>
           <span className="mb-2 block font-mono text-xs uppercase tracking-wider text-ink-muted">
-            Ik meld me aan als
+            {T.signupAs}
           </span>
           <div className="grid grid-cols-2 gap-2 rounded-xl border border-line bg-paper-soft p-1">
             {(["klant", "piloot"] as const).map((r) => (
@@ -88,7 +156,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
                     : "text-ink-muted hover:text-ink",
                 )}
               >
-                {r === "klant" ? "Opdrachtgever" : "Piloot"}
+                {r === "klant" ? T.client : T.pilot}
               </button>
             ))}
           </div>
@@ -100,7 +168,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           htmlFor="email"
           className="mb-2 block font-mono text-xs uppercase tracking-wider text-ink-muted"
         >
-          E-mailadres
+          {T.email}
         </label>
         <div className="relative">
           <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
@@ -111,7 +179,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="naam@bedrijf.nl"
+            placeholder={T.emailPlaceholder}
             className="w-full rounded-xl border border-line bg-white py-3 pl-10 pr-4 text-ink placeholder:text-ink-faint focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-200"
           />
         </div>
@@ -120,16 +188,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
       {status === "demo" ? (
         <div className="flex gap-3 rounded-xl border border-line bg-paper-soft p-4 text-sm text-ink-soft">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-600" />
-          <p className="pretty">
-            Inloggen wordt actief zodra Supabase is gekoppeld. Voeg je Supabase-keys toe
-            om magic-link login en live data in te schakelen.
-          </p>
+          <p className="pretty">{T.demo}</p>
         </div>
       ) : null}
 
       {status === "error" && error ? (
         <p className="rounded-xl border border-line bg-paper-soft p-4 text-sm text-ink-soft">
-          Er ging iets mis: {error}
+          {T.somethingWrong}{error}
         </p>
       ) : null}
 
@@ -141,11 +206,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
         {status === "loading" ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            Bezig…
+            {T.busy}
           </>
         ) : (
           <>
-            {isSignup ? "Account aanmaken" : "Inloglink versturen"}
+            {isSignup ? T.createAccount : T.sendLink}
             <ArrowRight className="h-4 w-4" />
           </>
         )}
@@ -154,16 +219,16 @@ export function AuthForm({ mode }: { mode: Mode }) {
       <p className="text-center text-sm text-ink-muted">
         {isSignup ? (
           <>
-            Heb je al een account?{" "}
-            <Link href="/login" className="link-underline">
-              Inloggen
+            {T.haveAccount}{" "}
+            <Link href={localized(locale, "/login")} className="link-underline">
+              {T.login}
             </Link>
           </>
         ) : (
           <>
-            Nog geen account?{" "}
-            <Link href="/signup" className="link-underline">
-              Gratis aanmelden
+            {T.noAccount}{" "}
+            <Link href={localized(locale, "/signup")} className="link-underline">
+              {T.signupFree}
             </Link>
           </>
         )}
