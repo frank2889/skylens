@@ -21,6 +21,7 @@
 | 04 | [Marketing-motor](plan/04-marketing.md) | Footage-flywheel, programmatic SEO, e-mailflows, paid, partnerships, jaar-1 budget |
 | 05 | [Techniek](plan/05-techniek.md) | Next.js + Supabase + Stripe + Resend, datamodel, matching, verificatie, EU-schaal, bouwfasen |
 | 06 | [Geo-strategie & 3-jarenplan](plan/06-geo-strategie-en-3jarenplan.md) | NL-first, EU-uitrol, jaar-voor-jaar, liquiditeit-playbook |
+| 08 | [Concurrentieanalyse](plan/08-concurrentieanalyse.md) | NL/UK/DE + globaal; voordeel/nadeel; markt-hervolgorde NL→DE→UK |
 
 > **Taalnoot:** dit overzicht is in het Nederlands. De zeven diepte-documenten in [`plan/`](plan/)
 > staan grotendeels in het Engels (de bron-analyses). Zeg het als je ze volledig naar het

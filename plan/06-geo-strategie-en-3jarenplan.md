@@ -3,6 +3,15 @@
 
 ---
 
+> **⚠ Concurrentie-update (juni 2026) — zie [08-concurrentieanalyse](08-concurrentieanalyse.md).**
+> Het marktonderzoek verfijnt de uitrolvolgorde naar **concurrentie-zachtheid: NL → DE → UK, met UK
+> als LAATSTE** (UK is het meest entrenched: Drone Safe Register, HireDronePilot, DRONEWORK — niet de
+> co-equal launch die "volledig UK" suggereerde). Twee andere correcties: (1) in **DE** werkt
+> Drohnenauftrag.de met **0% commissie + abonnement** — wees klaar om daar **abonnement-geleid** te
+> gaan i.p.v. op prijs te concurreren; (2) de categorieleider **Zeitview verliet exact dit
+> SMB-marktplaatsmodel** → onze **on-platform-enforcement is de bestaansreden**, niet een feature. De
+> "NL-first"-kern hieronder blijft volledig geldig; alleen UK schuift naar achteren in de volgorde.
+
 ## Part 1 — Geographic Strategy: NL-first, decisively
 
 ### The verdict
