@@ -14,6 +14,7 @@ import { HeroSearch } from "@/components/hero-search";
 import { SegmentCard, ShowcaseCard } from "@/components/cards";
 import { SectionHeading, Stat, TextLink, Stars } from "@/components/bits";
 import { CTASection } from "@/components/cta";
+import { OnPlatformSection } from "@/components/onplatform-section";
 import { MediaPlaceholder } from "@/components/media";
 import { SEGMENTS, PACKAGES } from "@/lib/catalog";
 import { SHOWCASE, PILOTS, STATS } from "@/lib/seed";
@@ -513,6 +514,8 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      <OnPlatformSection />
 
       <CTASection />
     </>
