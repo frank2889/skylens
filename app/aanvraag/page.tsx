@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ShieldCheck, Euro, Clock, Users, BadgeCheck } from "lucide-react";
 import { RequestForm } from "@/components/request-form";
 import { Eyebrow, Stars } from "@/components/bits";
@@ -34,13 +35,7 @@ const NEXT_STEPS = [
   "Vergelijk profielen en reviews, kies je piloot en plan de vlucht in.",
 ];
 
-export default async function AanvraagPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ segment?: string; stad?: string }>;
-}) {
-  const { segment, stad } = await searchParams;
-
+export default function AanvraagPage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-line">
@@ -64,7 +59,9 @@ export default async function AanvraagPage({
         <div className="grid gap-10 lg:grid-cols-[1.4fr_0.9fr] lg:items-start">
           {/* Form */}
           <div className="order-2 lg:order-1">
-            <RequestForm initialSegment={segment} initialCity={stad} />
+            <Suspense fallback={<div className="card card-pad text-ink-muted">Formulier laden…</div>}>
+              <RequestForm />
+            </Suspense>
           </div>
 
           {/* Reassurance panel */}

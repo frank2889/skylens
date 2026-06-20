@@ -3,6 +3,9 @@ import { SITE } from "@/lib/site";
 import { SEGMENTS, CITIES } from "@/lib/catalog";
 import { PILOTS } from "@/lib/seed";
 
+// Vereist voor statische export (output: export).
+export const dynamic = "force-static";
+
 const LAST_MODIFIED = new Date("2026-06-20");
 
 // Subset that matches the generateStaticParams subset of the

@@ -11,12 +11,10 @@ import { matchPilots, availablePilots } from "@/lib/matching";
 import { euro } from "@/lib/utils";
 
 export function generateStaticParams() {
-  // Representatieve subset vooraf renderen (eerste 6 toepassingen × eerste 8 steden).
-  // Overige combinaties renderen on-demand.
-  const segments = SEGMENTS.slice(0, 6);
-  const cities = CITIES.slice(0, 8);
-  return segments.flatMap((s) =>
-    cities.map((c) => ({ segment: s.slug, stad: c.slug })),
+  // Volledig kruisproduct (alle toepassingen × alle steden) zodat elke gelinkte
+  // SEO-pagina bestaat — vereist voor statische export (GitHub Pages).
+  return SEGMENTS.flatMap((s) =>
+    CITIES.map((c) => ({ segment: s.slug, stad: c.slug })),
   );
 }
 

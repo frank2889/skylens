@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search,
   MapPin,
@@ -37,16 +37,19 @@ export function RequestForm({
   initialCity?: string;
 }) {
   const router = useRouter();
+  const sp = useSearchParams();
+  const segParam = initialSegment ?? sp.get("segment") ?? undefined;
+  const cityParam = initialCity ?? sp.get("stad") ?? undefined;
 
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [softError, setSoftError] = useState(false);
 
   const [segment, setSegment] = useState(
-    initialSegment && getSegment(initialSegment) ? initialSegment : "vastgoed",
+    segParam && getSegment(segParam) ? segParam : "vastgoed",
   );
   const [city, setCity] = useState(
-    initialCity && getCity(initialCity) ? initialCity : "amsterdam",
+    cityParam && getCity(cityParam) ? cityParam : "amsterdam",
   );
   const [date, setDate] = useState("");
   const [budgetBand, setBudgetBand] = useState("");
