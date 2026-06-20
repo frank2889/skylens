@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+Disallow: /*/dashboard
+Disallow: /*/piloot
+Disallow: /*/admin
+Disallow: /*/aanvraag/bedankt
+
+Sitemap: https://frank2889.github.io/skylens/sitemap.xml
