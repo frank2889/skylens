@@ -13,8 +13,19 @@ aan een **geverifieerde, gecertificeerde, verzekerde drone-piloot**. Het is een
 geboekte opdracht**. Doel van de eigenaar: **near-zero operationeel werk**, **maximale
 designkwaliteit**, en **EU-uitbreiding** later.
 
-**Status (juni 2026):** strategie + marktonderzoek compleet (zie `plan/`). **Nog geen code.**
-Volgende stap is de MVP-codebase of een design-prototype — vraag de eigenaar wat eerst.
+**Status (juni 2026):** strategie + marktonderzoek compleet (plan/00–09). **Drietalige demo-site
+(NL/EN/DE) gebouwd en live** op GitHub Pages (https://frank2889.github.io/skylens/), met per-land
+regels/certificering, multi-currency, programmatische SEO, en een **on-platform demo-inbox**
+(`/[locale]/berichten`, mock-data: unlock=gesprek + contact-redactie + escrow-stappen).
+**Nog te doen:** live server + echte messaging/escrow/monitoring (zie `plan/07-onplatform.md` +
+`plan/09-roadmap-sprints.md`). **Grootste open punt blijft marktvalidatie** (Sprint 1) — bouw geen
+nieuwe laag vóór een echte piloot betaalt.
+
+**Deploy:** `bash scripts/deploy.sh` of de `/deploy`-skill (broncode → `main`; gebouwde site →
+`gh-pages`; GitHub Actions zit billing-locked, vandaar de branch-deploy).
+
+**Marktvolgorde (verfijnd, plan/08):** **NL → DE → UK**, UK als laatste (meest entrenched). In DE
+klaar om abonnement-geleid te gaan vs. Drohnenauftrag's 0%-commissie.
 
 ---
 

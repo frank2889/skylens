@@ -21,11 +21,38 @@
 | 04 | [Marketing-motor](plan/04-marketing.md) | Footage-flywheel, programmatic SEO, e-mailflows, paid, partnerships, jaar-1 budget |
 | 05 | [Techniek](plan/05-techniek.md) | Next.js + Supabase + Stripe + Resend, datamodel, matching, verificatie, EU-schaal, bouwfasen |
 | 06 | [Geo-strategie & 3-jarenplan](plan/06-geo-strategie-en-3jarenplan.md) | NL-first, EU-uitrol, jaar-voor-jaar, liquiditeit-playbook |
+| 07 | [On-platform-only](plan/07-onplatform.md) | Anti-disintermediatie: unlock=gesprek, escrow, monitoring (B0–B4) |
 | 08 | [Concurrentieanalyse](plan/08-concurrentieanalyse.md) | NL/UK/DE + globaal; voordeel/nadeel; markt-hervolgorde NL→DE→UK |
+| 09 | [Roadmap & sprints](plan/09-roadmap-sprints.md) | Wat is klaar + sprint-voor-sprint wat er nog moet |
 
 > **Taalnoot:** dit overzicht is in het Nederlands. De zeven diepte-documenten in [`plan/`](plan/)
 > staan grotendeels in het Engels (de bron-analyses). Zeg het als je ze volledig naar het
 > Nederlands vertaald wilt hebben.
+
+---
+
+## Status & live
+- **Live (demo):** https://frank2889.github.io/skylens/ — NL / EN / DE.
+- **Repo:** github.com/frank2889/skylens — broncode op `main`, gebouwde site op `gh-pages`.
+- **Werkt nu:** volledige drietalige marketing/SEO-site + per-land regels/certificering + on-platform
+  demo-inbox (mock-data, `/[locale]/berichten`).
+- **Nog te doen:** live server + echte messaging/escrow/monitoring → zie
+  [09-roadmap-sprints](plan/09-roadmap-sprints.md) en [07-onplatform](plan/07-onplatform.md).
+
+## Projectstructuur
+```
+app/[locale]/        Next.js-pagina's per taal (nl/en/de)
+components/          UI + demo-inbox, cards, header/footer, on-platform-sectie
+lib/                 catalog, seed, matching, jurisdictions, i18n, moderation, utils, supabase
+plan/                00–09 strategie + plannen (de .md-documenten hierboven)
+supabase/            migraties + seed + handleiding
+scripts/deploy.sh    build static export + deploy naar GitHub Pages
+.claude/skills/      project-skills (deploy)  ← de "skills map"
+```
+
+## Deploy
+`bash scripts/deploy.sh` (of de **/deploy**-skill). Details: [.claude/skills/deploy/SKILL.md](.claude/skills/deploy/SKILL.md).
+Eerst broncode naar `main` committen; `gh-pages` bevat alleen de gebouwde `out/`.
 
 ---
 
