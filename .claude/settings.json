@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.bark.com)",
+      "WebFetch(domain:www.kbvresearch.com)",
+      "WebFetch(domain:dronematch.nl)",
+      "WebFetch(domain:ts2.tech)",
+      "WebFetch(domain:www.werkspot.nl)",
+      "WebFetch(domain:www.dji.com)",
+      "WebFetch(domain:www.cliftoncameras.co.uk)",
+      "WebFetch(domain:pilotinstitute.com)",
+      "WebFetch(domain:droners.io)",
+      "WebFetch(domain:www.dpreview.com)",
+      "WebFetch(domain:www.rdw.nl)",
+      "WebFetch(domain:www.dronelaw.pro)",
+      "WebFetch(domain:www.cined.com)",
+      "WebFetch(domain:www.space.com)",
+      "WebFetch(domain:www.imarcgroup.com)",
+      "WebFetch(domain:www.marketdataforecast.com)",
+      "WebFetch(domain:www.nar.realtor)",
+      "WebFetch(domain:www.thefuture3d.com)",
+      "WebFetch(domain:skyscansurveys.co.uk)",
+      "WebFetch(domain:www.energiekeurplus.nl)",
+      "WebFetch(domain:www.impactaerial.co.uk)",
+      "WebFetch(domain:dronematica.nl)",
+      "WebFetch(domain:vastgoedfotovideo.nl)"
+    ]
+  }
+}
